@@ -2,42 +2,40 @@
 # Author :- Md Habibur Rahman
 # Date :- 03 April 2021
 
-if [ ! -d /usr/bin ];then
-  if [ ! -e /data/data/com.termux/files/usr/bin/python ];then
-    pkg update -y
-    pkg install python -y
-  fi
+#!/data/data/com.termux/files/usr/bin/bash
+
+# Tool Name :- HamppServer (Customized for Termux)
+# Author :- Your Name
+# Forked from Md Habibur Rahman
+
+echo "[*] Updating packages..."
+pkg update -y
+
+echo "[*] Installing dependencies..."
+pkg install -y python mariadb unzip wget php-apache
+
+echo "[*] Installing Python modules..."
+pip install --upgrade pip
+pip install requests colorama
+
+echo "[*] Modifying Apache document root..."
+CONF_PATH=$PREFIX/etc/apache2/httpd.conf
+NEW_ROOT="/storage/3563-6462/htdocs"
+
+if [ -d "$NEW_ROOT" ]; then
+  sed -i "s|DocumentRoot \".*\"|DocumentRoot \"$NEW_ROOT\"|" $CONF_PATH
+  sed -i "s|<Directory \".*\">|<Directory \"$NEW_ROOT\">|" $CONF_PATH
+  echo "[*] Document root changed to $NEW_ROOT"
+else
+  echo "[!] Warning: $NEW_ROOT does not exist. Skipping root change."
 fi
 
-if [ ! -d /usr/bin ];then
-  if [ -e /data/data/com.termux/files/usr/bin/apachectl ];then
-    pkg update -y
-    apt purge apache2 -y
-  fi
+echo "[*] Running setup script..."
+if [ -f .setup.aex ]; then
+  python .setup.aex
+else
+  echo "[!] Setup file (.setup.aex) not found."
 fi
 
-if [ ! -d /usr/bin ];then
-  if [ ! -e /data/data/com.termux/files/usr/bin/mysql ];then
-    pkg update -y
-    pkg install mariadb -y
-  fi
-fi
-
-if [ ! -d /usr/bin ];then
-  if [ ! -e /data/data/com.termux/files/usr/bin/unzip ];then
-    pkg update -y
-    pkg install unzip -y
-  fi
-fi
-
-if [ ! -d /usr/wget ];then
-  if [ ! -e /data/data/com.termux/files/usr/bin/wget ];then
-    pkg update -y
-    pkg install wget -y
-  fi
-fi
-apt install php-apache -y
-pip install requests
-pip install colorama
-python .setup.aex
+echo "[*] Installation complete. Start Apache with: apachectl start"
 exit

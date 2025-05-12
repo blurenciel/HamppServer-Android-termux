@@ -55,11 +55,11 @@ class setu(object):
     else:
       logo()
       print("\n\033[01;33m\007Installing HamppServer .....\n")
-      if os.access('/sdcard', os.R_OK):
-         if path.exists('/sdcard/www'):
+      if os.access('/storage/3563-6462/', os.R_OK):
+         if path.exists('/storage/3563-6462/htdocs'):
          	pass
          else:
-         	os.system("mkdir /sdcard/www")
+         	os.system("mkdir /storage/3563-6462/htdocs")
       else:
        	print("\n\n \033[01;31mSetup storage permission to termux to continue...\n\n")
        	sys.exit()
@@ -93,19 +93,19 @@ class setu(object):
       		con_file.truncate()
       os.system("mv -v .HamppServer.py LICENSE "+spath+"HamppServer")
       os.system("cp "+spath+"mysql/mysql.server "+bpath)
-      if path.exists("/sdcard/www/index.php"):
+      if path.exists("/storage/3563-6462/htdocs/index.php"):
       	pass
       else:
-      	os.system("mv -v core/index.php /sdcard/www")
-      os.system("mv -v core/phpinfo.php /sdcard/www")
-      if path.exists("/sdcard/www/phpmyadmin"):
+      	os.system("mv -v core/index.php /storage/3563-6462/htdocs")
+      os.system("mv -v core/phpinfo.php /storage/3563-6462/htdocs")
+      if path.exists("/storage/3563-6462/htdocs/phpmyadmin"):
       	pass
       else:
       	choice = input("\n\033[01;33mDo you want to install phpmyadmin? (y/n)")
       	if choice == "y":
       		print("\n\033[01;32mDownloading phpmyadmin.....\033[01;33m\\033[00m\n")
       		os.system("wget https://github.com/yourchocomate/phpmyadmin/raw/main/phpmyadmin.zip -o core/phpmyadmin.zip")
-      		os.system("unzip core/phpmyadmin.zip -d /sdcard/www/phpmyadmin")
+      		os.system("unzip core/phpmyadmin.zip -d /storage/3563-6462/htdocs/phpmyadmin")
       	else:
       		pass
       os.system("chmod +x "+bpath+"hampp")

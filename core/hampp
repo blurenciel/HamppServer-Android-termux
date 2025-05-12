@@ -1,11 +1,35 @@
-# Tool Name :- HamppServer
-# Author :- Md Habibur Rahman
-# Date :- 03 April 2021
+#!/data/data/com.termux/files/usr/bin/bash
 
-if [ -d /data/data/com.termux/files/usr/share/HamppServer ];then
-  cd /data/data/com.termux/files/usr/share/HamppServer
-  exec python .HamppServer.py $@
-else
-  cd /usr/share/HamppServer
-  exec python .HamppServer.py $@
-fi
+APACHECTL="/data/data/com.termux/files/usr/bin/apachectl"
+MYSQLD_SAFE="/data/data/com.termux/files/usr/bin/mysqld_safe"
+MYSQL_PIDFILE="/data/data/com.termux/files/usr/var/run/mysqld/mysqld.pid"
+APACHE_PIDFILE="/data/data/com.termux/files/usr/var/run/httpd/httpd.pid"
+
+case $1 in
+    start)
+        echo "Starting MySQL..."
+        mkdir -p /data/data/com.termux/files/usr/var/run/mysqld
+        chmod 755 /data/data/com.termux/files/usr/var/run/mysqld
+        $MYSQLD_SAFE --user=$(whoami) &
+        sleep 3
+
+        echo "Starting Apache..."
+        $APACHECTL start
+        ;;
+    stop)
+        echo "Stopping Apache..."
+        $APACHECTL stop
+        echo "Stopping MySQL..."
+        if [ -f "$MYSQL_PIDFILE" ]; then
+            kill -TERM $(cat "$MYSQL_PIDFILE")
+        fi
+        ;;
+    restart)
+        $0 stop
+        sleep 2
+        $0 start
+        ;;
+    *)
+        echo "Usage: hampp {start|stop|restart}"
+        ;;
+esac
